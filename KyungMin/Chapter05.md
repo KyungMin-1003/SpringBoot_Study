@@ -292,8 +292,3 @@ public String handleRuntimeException(RuntimeException e) {
 | `ifPresent()`   | 값이 있을 때만 실행         |
 
 
-
-- 프로젝트 세팅을 마친 상태에서 응답 통일 객체, 에러 핸들링할 객체를 생성하기
-
-- 2주차 미션으로 진행한 API 명세서를 기반으로 Controller, DTO 제작하기
-  (Service & Repository는 다음 주차에서 하기)

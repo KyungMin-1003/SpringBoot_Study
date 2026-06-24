@@ -7,50 +7,95 @@ import com.example.springboot.springboot.global.apiPayload.code.GeneralSuccessCo
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/members")
 public class MemberController {
 
-    //회원가입
-    @PostMapping("/auth/signup")
+    // 회원가입
+    @PostMapping("/signup")
     public ApiResponse<MemberResDTO.SignUpResultDto> signUp(
             @RequestBody MemberReqDTO.SignUpDto request
-            ) {
+    ) {
         MemberResDTO.SignUpResultDto result =
                 new MemberResDTO.SignUpResultDto(
                         1L,
-                        request.getLoginId(),
-                        request.getName()
+                        request.getName(),
+                        request.getEmail()
                 );
+
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
 
-    //로그인
-    @PostMapping("/auth/login")
+    // 로그인
+    @PostMapping("/login")
     public ApiResponse<MemberResDTO.LoginResultDto> login(
             @RequestBody MemberReqDTO.LoginDto request
     ) {
         MemberResDTO.LoginResultDto result =
                 new MemberResDTO.LoginResultDto(
+                        "temporary-access-token",
                         1L,
-                        "temporary-access-token"
+                        "김경민"
                 );
 
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
 
+    // 로그아웃
+    @PostMapping("/logout")
+    public ApiResponse<MemberResDTO.LogoutResultDto> logout(
+            @RequestHeader("Authorization") String authorization
+    ) {
+        MemberResDTO.LogoutResultDto result =
+                new MemberResDTO.LogoutResultDto(
+                        "로그아웃되었습니다."
+                );
 
-    //탈퇴
-    @DeleteMapping("/member/me")
+        return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
+    }
+
+    // 내 정보 조회
+    @GetMapping("/me")
+    public ApiResponse<MemberResDTO.MyInfoDto> getMyInfo(
+            @RequestHeader("Authorization") String authorization
+    ) {
+        MemberResDTO.MyInfoDto result =
+                new MemberResDTO.MyInfoDto(
+                        1L,
+                        "김경민",
+                        "test@example.com",
+                        25
+                );
+
+        return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
+    }
+
+    // 회원 정보 수정
+    @PatchMapping("/me")
+    public ApiResponse<MemberResDTO.UpdateMemberResultDto> updateMember(
+            @RequestHeader("Authorization") String authorization,
+            @RequestBody MemberReqDTO.UpdateMemberDto request
+    ) {
+        MemberResDTO.UpdateMemberResultDto result =
+                new MemberResDTO.UpdateMemberResultDto(
+                        1L,
+                        request.getName()
+                );
+
+        return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
+    }
+
+    // 회원 탈퇴
+    @DeleteMapping("/me")
     public ApiResponse<MemberResDTO.WithdrawResultDto> withdraw(
             @RequestHeader("Authorization") String authorization,
             @RequestBody MemberReqDTO.WithdrawDto request
     ) {
         MemberResDTO.WithdrawResultDto result =
-                new MemberResDTO.WithdrawResultDto("회원 탈퇴가 완료되었습니다.");
+                new MemberResDTO.WithdrawResultDto(
+                        "회원 탈퇴가 완료되었습니다."
+                );
 
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
 }
-
-
-
 

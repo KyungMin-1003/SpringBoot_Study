@@ -7,24 +7,45 @@ public class MemberResDTO {
 
     @Getter
     @AllArgsConstructor
-    public static class SignUpResultDto{
+    public static class SignUpResultDto {
         private Long memberId;
-        private String logId;
         private String name;
-
+        private String email;
     }
 
     @Getter
     @AllArgsConstructor
     public static class LoginResultDto {
-        private Long memberId;
         private String accessToken;
-
+        private Long memberId;
+        private String name;
     }
 
     @Getter
     @AllArgsConstructor
-    public static class WithdrawResultDto{
+    public static class LogoutResultDto {
+        private String message;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class MyInfoDto {
+        private Long memberId;
+        private String name;
+        private String email;
+        private Integer point;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class UpdateMemberResultDto {
+        private Long memberId;
+        private String name;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class WithdrawResultDto {
         private String message;
     }
 }
