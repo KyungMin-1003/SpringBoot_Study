@@ -451,5 +451,4 @@ UserEntity → UserResponseDto
 
 ## 미션 
 - 0주차때 만든 ERD를 토대로 도메인형 아키텍처로 스프링 프로젝트 세팅하기!
-- `10th-Spring-Boot/본인 이름/`의 하위에 md를 만들던 위치에 `springboot`라는 디렉터리 하위의 스프링 프로젝트 세팅 프로젝트를 세팅해 봅시다!
-- ex) `10th-Spring-Boot/mir/springboot`
+- Spring-Boot/본인 이름/`의 하위에 md를 만들던 위치에 `springboot`라는 디렉터리 하위의 스프링 프로젝트 세팅 프로젝트를 세팅해 봅시다!
