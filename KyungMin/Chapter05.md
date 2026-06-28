@@ -348,3 +348,16 @@ public String handleRuntimeException(RuntimeException e) {
 ```text
 회원을 찾을 수 없습니다.
 ```
+
+## 7. 미션
+
+이번 미션에서는 프로젝트 세팅을 마친 상태에서, API 응답과 예외 처리를 위한 기본 구조를 먼저 만들어봅니다.
+
+### 진행할 내용
+
+- 응답을 통일해서 반환할 수 있는 공통 응답 객체 생성하기
+- 에러 상황을 처리할 수 있는 공통 에러 핸들링 객체 생성하기
+- 2주차 미션으로 진행한 API 명세서를 기반으로 Controller 제작하기
+- API 요청과 응답에 사용할 DTO 제작하기
+
+> Service와 Repository는 다음 주차에서 진행합니다.
