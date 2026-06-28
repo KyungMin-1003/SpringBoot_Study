@@ -1,2 +1,25 @@
 
 *.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Gradle / Spring Boot
+.gradle/
+build/
+**/build/
+out/
+**/out/
+
+# Logs
+*.log
+
+# Local env
+.env
+*.env

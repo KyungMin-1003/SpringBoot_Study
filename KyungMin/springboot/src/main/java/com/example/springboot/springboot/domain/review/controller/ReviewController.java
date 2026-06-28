@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 public class ReviewController {
 
-    // 독후감 작성
+   //독후감 작성
     @PostMapping("/books/{bookId}/reviews")
     public ApiResponse<ReviewResDTO.CreateReviewResultDto> createReview(
             @PathVariable Long bookId,
@@ -30,7 +30,7 @@ public class ReviewController {
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
 
-    // 도서 리뷰 목록 조회
+    //도서리뷰 목록 조회
     @GetMapping("/books/{bookId}/reviews")
     public ApiResponse<ReviewResDTO.ReviewListDto> getBookReviews(
             @PathVariable Long bookId,
@@ -42,8 +42,8 @@ public class ReviewController {
                         1L,
                         bookId,
                         1L,
-                        "김경민",
-                        "책이 이해하기 쉽고 좋았습니다.",
+                        "ㄹㅇㄴㄹ",
+                        "ㅇㄴㄻ;",
                         5,
                         LocalDateTime.now()
                 );
@@ -53,8 +53,8 @@ public class ReviewController {
                         2L,
                         bookId,
                         2L,
-                        "홍길동",
-                        "내용이 유익했습니다.",
+                        "김경민",
+                        "내용 좋다",
                         4,
                         LocalDateTime.now()
                 );
@@ -68,7 +68,7 @@ public class ReviewController {
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
 
-    // 회원 리뷰 목록 조회
+  //회원 리뷰 목록 조회
     @GetMapping("/members/{memberId}/reviews")
     public ApiResponse<ReviewResDTO.ReviewListDto> getMemberReviews(
             @PathVariable Long memberId,
@@ -82,7 +82,7 @@ public class ReviewController {
                         1L,
                         memberId,
                         "김경민",
-                        "책내용 !@#ㅉ@!#!#.",
+                        "ㄴㅇㅁㄹ",
                         5,
                         LocalDateTime.now()
                 );
@@ -92,8 +92,8 @@ public class ReviewController {
                         2L,
                         2L,
                         memberId,
-                        "김경민",
-                        "굿 좋아용",
+                        "ㄴㅇㅁㄱㄹㅇ",
+                        "ㅇㄴ",
                         4,
                         LocalDateTime.now()
                 );
@@ -107,7 +107,7 @@ public class ReviewController {
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
 
-    // 독후감 수정
+    //독후감 수정
     @PatchMapping("/reviews/{reviewId}")
     public ApiResponse<ReviewResDTO.UpdateReviewResultDto> updateReview(
             @PathVariable Long reviewId,

@@ -12,7 +12,7 @@ import java.util.List;
 @RequestMapping("/books")
 public class BookController {
 
-    // 도서 등록
+    //도서 등록
     @PostMapping
     public ApiResponse<BookResDTO.CreateBookResultDto> createBook(
             @RequestHeader("Authorization") String authorization,
@@ -39,9 +39,9 @@ public class BookController {
                 new BookResDTO.BookInfoDto(
                         1L,
                         "자바의 정석",
-                        "몰라용..최근에 샀음ㅇㄴ",
+                        "ㄴㅇㅁㄴ",
                         "23",
-                        "23",
+                        "123",
                         true
                 );
 
@@ -49,22 +49,22 @@ public class BookController {
                 new BookResDTO.BookInfoDto(
                         2L,
                         "12",
-                        "12",
-                        "12",
-                        "12",
+                        "13",
+                        "14",
+                        "15",
                         false
                 );
 
         BookResDTO.BookListDto result =
                 new BookResDTO.BookListDto(
                         List.of(book1, book2),
-                        "page=" + page + ", size=" + size
+                        "page" + page + ", size" + size
                 );
 
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
 
-    // 도서 상세 조회
+//도서 상세 조회
     @GetMapping("/{bookId}")
     public ApiResponse<BookResDTO.BookInfoDto> getBook(
             @PathVariable Long bookId
@@ -72,17 +72,17 @@ public class BookController {
         BookResDTO.BookInfoDto result =
                 new BookResDTO.BookInfoDto(
                         bookId,
-                        "책..을 읽기",
-                        "ㄴㅇ",
-                        "ㅇ",
-                        "...",
+                        "23",
+                        "12",
+                        "13",
+                        "123",
                         true
                 );
 
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
 
-    // 도서 정보 수정
+    //도서 정보 수정
     @PatchMapping("/{bookId}")
     public ApiResponse<BookResDTO.UpdateBookResultDto> updateBook(
             @PathVariable Long bookId,
@@ -98,7 +98,7 @@ public class BookController {
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
 
-    // 도서 삭제
+ //도서 삭제
     @DeleteMapping("/{bookId}")
     public ApiResponse<BookResDTO.DeleteBookResultDto> deleteBook(
             @PathVariable Long bookId,
