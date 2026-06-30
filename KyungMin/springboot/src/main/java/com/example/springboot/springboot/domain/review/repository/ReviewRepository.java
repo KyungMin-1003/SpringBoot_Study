@@ -1,4 +1,22 @@
 package com.example.springboot.springboot.domain.review.repository;
 
-public interface ReviewRepository {
+import com.example.springboot.springboot.domain.review.entity.Review;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+public interface ReviewRepository extends JpaRepository<Review, Long> {
+    @Query(
+            value = "SELECT r FROM Review r WHERE r.book.id = :bookId ORDER BY r.id DESC",
+            countQuery = "SELECT count(r) FROM Review r WHERE r.book.id = :bookId"
+    )
+    Page<Review> findReviewsByBookId(@Param("bookId") Long bookId, Pageable pageable);
+
+    @Query(
+            value = "SELECT r FROM Review r WHERE r.member.id = :memberId ORDER BY r.id DESC",
+            countQuery = "SELECT count(r) FROM Review r WHERE r.member.id = :memberId"
+    )
+    Page<Review> findReviewsByMemberId(@Param("memberId") Long memberId, Pageable pageable);
 }
