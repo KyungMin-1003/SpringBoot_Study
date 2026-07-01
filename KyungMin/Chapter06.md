@@ -380,3 +380,9 @@ spring에서는 @Transactional을 주로 사용한다.
   - (페이징 부분은 @Query를 통해 구현)
   - (구현한 뒤 Swagger 화면 캡쳐)
 
+RentalController와 StoreController를 Service 계층과 연결한 뒤 Swagger에서 확인한 화면
+![Swagger 실행 화면](./images/chapter06-swagger.png.png)
+
+![도서 대여 API 1](./images/chapter06-rental_post.png.png)
+
+![도서 대여 API 2](./images/chapter06-rental_post2.png.png)
