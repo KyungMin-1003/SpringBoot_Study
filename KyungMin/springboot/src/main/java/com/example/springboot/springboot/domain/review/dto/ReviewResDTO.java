@@ -49,4 +49,12 @@ public class ReviewResDTO {
         private Long reviewId;
         private String message;
     }
+
+    @Getter
+    @AllArgsConstructor
+    public static class ReviewCursorListDto {
+        private List<ReviewInfoDto> reviews;
+        private Long nextCursor;
+        private Boolean hasNext;
+    }
 }

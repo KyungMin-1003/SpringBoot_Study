@@ -459,6 +459,10 @@ Spring뿐만 아니라 Bean Validation 표준에서 제공하는 기능이다.
 
 단순히 Request Body의 값을 검증할 때는 `@Valid`를 사용하면 충분하다.
 
+쉽게 예시를 들면 회원을 생성할 때에는 이름, 이메일, 비밀번호가 전부 필요하다. 
+하지만 회원 정보를 수정할 때는 비밀번호를 꼭 받을 필요는 없다. 이경우 같은 MemberRequest를 쓰더라도 검증 규칙이 달라지기 때문에
+이럴 때 validated를 사용할 수 있다.
+
 ```java
 @RequestBody @Valid CreateMissionRequest request
 ```

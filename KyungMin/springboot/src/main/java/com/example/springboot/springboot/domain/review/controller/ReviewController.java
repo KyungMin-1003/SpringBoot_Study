@@ -2,116 +2,60 @@ package com.example.springboot.springboot.domain.review.controller;
 
 import com.example.springboot.springboot.domain.review.dto.ReviewReqDTO;
 import com.example.springboot.springboot.domain.review.dto.ReviewResDTO;
+import com.example.springboot.springboot.domain.review.service.ReviewService;
 import com.example.springboot.springboot.global.apiPayload.ApiResponse;
 import com.example.springboot.springboot.global.apiPayload.code.GeneralSuccessCode;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @RestController
+@RequiredArgsConstructor
 public class ReviewController {
 
-   //독후감 작성
+    private final ReviewService reviewService;
+
+    // 리뷰 작성
     @PostMapping("/books/{bookId}/reviews")
     public ApiResponse<ReviewResDTO.CreateReviewResultDto> createReview(
             @PathVariable Long bookId,
-            @RequestHeader("Authorization") String authorization,
+            @RequestHeader(value = "Authorization", required = false) String authorization,
             @RequestBody ReviewReqDTO.CreateReviewDto request
     ) {
-        ReviewResDTO.CreateReviewResultDto result =
-                new ReviewResDTO.CreateReviewResultDto(
-                        1L,
-                        bookId,
-                        request.getMemberId(),
-                        LocalDateTime.now()
-                );
+        ReviewResDTO.CreateReviewResultDto result = reviewService.createReview(bookId, request);
 
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
 
-    //도서리뷰 목록 조회
+    // 도서 리뷰 목록 조회
     @GetMapping("/books/{bookId}/reviews")
     public ApiResponse<ReviewResDTO.ReviewListDto> getBookReviews(
             @PathVariable Long bookId,
             @RequestParam(required = false, defaultValue = "0") Integer page,
             @RequestParam(required = false, defaultValue = "10") Integer size
     ) {
-        ReviewResDTO.ReviewInfoDto review1 =
-                new ReviewResDTO.ReviewInfoDto(
-                        1L,
-                        bookId,
-                        1L,
-                        "ㄹㅇㄴㄹ",
-                        "ㅇㄴㄻ;",
-                        5,
-                        LocalDateTime.now()
-                );
-
-        ReviewResDTO.ReviewInfoDto review2 =
-                new ReviewResDTO.ReviewInfoDto(
-                        2L,
-                        bookId,
-                        2L,
-                        "김경민",
-                        "내용 좋다",
-                        4,
-                        LocalDateTime.now()
-                );
-
-        ReviewResDTO.ReviewListDto result =
-                new ReviewResDTO.ReviewListDto(
-                        List.of(review1, review2),
-                        "page=" + page + ", size=" + size
-                );
+        ReviewResDTO.ReviewListDto result = reviewService.getBookReviews(bookId, page, size);
 
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
 
-  //회원 리뷰 목록 조회
+    // 회원 리뷰 목록 조회
     @GetMapping("/members/{memberId}/reviews")
-    public ApiResponse<ReviewResDTO.ReviewListDto> getMemberReviews(
+    public ApiResponse<ReviewResDTO.ReviewCursorListDto> getMemberReviews(
             @PathVariable Long memberId,
-            @RequestHeader("Authorization") String authorization,
-            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestHeader(value = "Authorization", required = false) String authorization,
+            @RequestParam(required = false) Long cursor,
             @RequestParam(required = false, defaultValue = "10") Integer size
     ) {
-        ReviewResDTO.ReviewInfoDto review1 =
-                new ReviewResDTO.ReviewInfoDto(
-                        1L,
-                        1L,
-                        memberId,
-                        "김경민",
-                        "ㄴㅇㅁㄹ",
-                        5,
-                        LocalDateTime.now()
-                );
-
-        ReviewResDTO.ReviewInfoDto review2 =
-                new ReviewResDTO.ReviewInfoDto(
-                        2L,
-                        2L,
-                        memberId,
-                        "ㄴㅇㅁㄱㄹㅇ",
-                        "ㅇㄴ",
-                        4,
-                        LocalDateTime.now()
-                );
-
-        ReviewResDTO.ReviewListDto result =
-                new ReviewResDTO.ReviewListDto(
-                        List.of(review1, review2),
-                        "page=" + page + ", size=" + size
-                );
+        ReviewResDTO.ReviewCursorListDto result = reviewService.getMyReviews(memberId, cursor, size);
 
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
 
-    //독후감 수정
+    // 리뷰 수정
     @PatchMapping("/reviews/{reviewId}")
     public ApiResponse<ReviewResDTO.UpdateReviewResultDto> updateReview(
             @PathVariable Long reviewId,
-            @RequestHeader("Authorization") String authorization,
+            @RequestHeader(value = "Authorization", required = false) String authorization,
             @RequestBody ReviewReqDTO.UpdateReviewDto request
     ) {
         ReviewResDTO.UpdateReviewResultDto result =
@@ -123,16 +67,16 @@ public class ReviewController {
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
 
-    // 독후감 삭제
+    // 리뷰 삭제
     @DeleteMapping("/reviews/{reviewId}")
     public ApiResponse<ReviewResDTO.DeleteReviewResultDto> deleteReview(
             @PathVariable Long reviewId,
-            @RequestHeader("Authorization") String authorization
+            @RequestHeader(value = "Authorization", required = false) String authorization
     ) {
         ReviewResDTO.DeleteReviewResultDto result =
                 new ReviewResDTO.DeleteReviewResultDto(
                         reviewId,
-                        "독후감이 삭제되었습니다."
+                        "리뷰가 삭제되었습니다."
                 );
 
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);

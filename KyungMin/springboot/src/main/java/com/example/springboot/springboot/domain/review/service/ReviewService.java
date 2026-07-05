@@ -5,6 +5,7 @@ import com.example.springboot.springboot.domain.book.entity.Book;
 import com.example.springboot.springboot.domain.book.repository.BookRepository;
 import com.example.springboot.springboot.domain.member.entity.Member;
 import com.example.springboot.springboot.domain.member.repository.MemberRepository;
+import com.example.springboot.springboot.domain.review.converter.ReviewConverter;
 import com.example.springboot.springboot.domain.review.dto.ReviewReqDTO;
 import com.example.springboot.springboot.domain.review.dto.ReviewResDTO;
 import com.example.springboot.springboot.domain.review.entity.Review;
@@ -59,15 +60,7 @@ public class ReviewService {
         );
 
         List<ReviewResDTO.ReviewInfoDto> reviews = reviewPage.getContent().stream()
-                .map(review -> new ReviewResDTO.ReviewInfoDto(
-                        review.getId(),
-                        review.getBook().getId(),
-                        review.getMember().getId(),
-                        review.getMember().getName(),
-                        review.getContent(),
-                        review.getRating(),
-                        LocalDateTime.now()
-                ))
+                .map(ReviewConverter::toReviewInfoDto)
                 .toList();
 
         return new ReviewResDTO.ReviewListDto(
@@ -86,15 +79,7 @@ public class ReviewService {
         );
 
         List<ReviewResDTO.ReviewInfoDto> reviews = reviewPage.getContent().stream()
-                .map(review -> new ReviewResDTO.ReviewInfoDto(
-                        review.getId(),
-                        review.getBook().getId(),
-                        review.getMember().getId(),
-                        review.getMember().getName(),
-                        review.getContent(),
-                        review.getRating(),
-                        LocalDateTime.now()
-                ))
+                .map(ReviewConverter::toReviewInfoDto)
                 .toList();
 
         return new ReviewResDTO.ReviewListDto(
@@ -103,5 +88,16 @@ public class ReviewService {
                         ", totalPages=" + reviewPage.getTotalPages() +
                         ", totalElements=" + reviewPage.getTotalElements()
         );
+    }
+
+    @Transactional
+    public ReviewResDTO.ReviewCursorListDto getMyReviews(Long memberId, Long cursor, Integer size) {
+        List<Review> reviews = reviewRepository.findMyReviewsByCursor(
+                memberId,
+                cursor,
+                PageRequest.of(0, size + 1)
+        );
+
+        return ReviewConverter.toReviewCursorListDto(reviews, size);
     }
 }

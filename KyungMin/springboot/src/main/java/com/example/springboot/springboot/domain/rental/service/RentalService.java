@@ -7,6 +7,7 @@ import com.example.springboot.springboot.domain.member.repository.MemberReposito
 import com.example.springboot.springboot.domain.rental.dto.RentalReqDTO;
 import com.example.springboot.springboot.domain.rental.dto.RentalResDTO;
 import com.example.springboot.springboot.domain.rental.entity.Rental;
+import com.example.springboot.springboot.domain.rental.enums.RentalStatus;
 import com.example.springboot.springboot.domain.rental.repository.RentalRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -91,7 +92,38 @@ public class RentalService {
                 rentals,
                 "page=" + page + ", size=" + size +
                         ", totalPages=" + rentalPage.getTotalPages() +
-                        ", totalElements=" + rentalPage.getTotalElements()
+                ", totalElements=" + rentalPage.getTotalElements()
+        );
+    }
+
+    @Transactional
+    public RentalResDTO.OngoingRentalListDto getOngoingRentals(RentalReqDTO.OngoingRentalSearchDto request) {
+        Page<Rental> rentalPage = rentalRepository.findRentalsByMemberIdAndStatus(
+                request.getMemberId(),
+                RentalStatus.RENTED,
+                PageRequest.of(request.getPage(), request.getSize())
+        );
+
+        List<RentalResDTO.RentalInfoDto> rentals = rentalPage.getContent().stream()
+                .map(rental -> new RentalResDTO.RentalInfoDto(
+                        rental.getId(),
+                        rental.getBook().getId(),
+                        rental.getBook().getTitle(),
+                        rental.getRentedAt(),
+                        rental.getDueDate(),
+                        rental.getReturnedAt(),
+                        rental.getStatus().name()
+                ))
+                .toList();
+
+        return new RentalResDTO.OngoingRentalListDto(
+                rentals,
+                request.getPage(),
+                request.getSize(),
+                rentalPage.getTotalPages(),
+                rentalPage.getTotalElements(),
+                rentalPage.isFirst(),
+                rentalPage.isLast()
         );
     }
 }
