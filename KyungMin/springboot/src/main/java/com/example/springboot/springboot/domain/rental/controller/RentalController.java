@@ -19,7 +19,7 @@ public class RentalController {
     public ApiResponse<RentalResDTO.CreateRentalResultDto> rentBook(
             @PathVariable Long bookId,
             @RequestHeader("Authorization") String authorization,
-            @RequestBody RentalReqDTO.CreateRentalDto request
+            @Valid @RequestBody RentalReqDTO.CreateRentalDto request
     ) {
         RentalResDTO.CreateRentalResultDto result =
                 rentalService.createRental(bookId, request);
@@ -33,7 +33,7 @@ public class RentalController {
     public ApiResponse<RentalResDTO.ReturnRentalResultDto> returnBook(
             @PathVariable Long rentalId,
             @RequestHeader("Authorization") String authorization,
-            @RequestBody RentalReqDTO.ReturnRentalDto request
+            @Valid @RequestBody RentalReqDTO.ReturnRentalDto request
     ) {
         RentalResDTO.ReturnRentalResultDto result =
                 rentalService.returnRental(rentalId, request);

@@ -5,6 +5,7 @@ import com.example.springboot.springboot.domain.review.dto.ReviewResDTO;
 import com.example.springboot.springboot.domain.review.service.ReviewService;
 import com.example.springboot.springboot.global.apiPayload.ApiResponse;
 import com.example.springboot.springboot.global.apiPayload.code.GeneralSuccessCode;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class ReviewController {
     public ApiResponse<ReviewResDTO.CreateReviewResultDto> createReview(
             @PathVariable Long bookId,
             @RequestHeader(value = "Authorization", required = false) String authorization,
-            @RequestBody ReviewReqDTO.CreateReviewDto request
+            @Valid @RequestBody ReviewReqDTO.CreateReviewDto request
     ) {
         ReviewResDTO.CreateReviewResultDto result = reviewService.createReview(bookId, request);
 
@@ -56,7 +57,7 @@ public class ReviewController {
     public ApiResponse<ReviewResDTO.UpdateReviewResultDto> updateReview(
             @PathVariable Long reviewId,
             @RequestHeader(value = "Authorization", required = false) String authorization,
-            @RequestBody ReviewReqDTO.UpdateReviewDto request
+            @Valid @RequestBody ReviewReqDTO.UpdateReviewDto request
     ) {
         ReviewResDTO.UpdateReviewResultDto result =
                 new ReviewResDTO.UpdateReviewResultDto(
