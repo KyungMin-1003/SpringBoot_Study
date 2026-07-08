@@ -39,7 +39,7 @@ public class BookController {
                 new BookResDTO.BookInfoDto(
                         1L,
                         "자바의 정석",
-                        "ㄴㅇㅁㄴ",
+                        "ㄴㅇㅁ",
                         "23",
                         "123",
                         true
