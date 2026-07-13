@@ -2,27 +2,32 @@ package com.example.springboot.springboot.domain.member.controller;
 
 import com.example.springboot.springboot.domain.member.dto.MemberReqDTO;
 import com.example.springboot.springboot.domain.member.dto.MemberResDTO;
+import com.example.springboot.springboot.domain.member.service.MemberService;
 import com.example.springboot.springboot.global.apiPayload.ApiResponse;
 import com.example.springboot.springboot.global.apiPayload.code.GeneralSuccessCode;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/members")
+@RequiredArgsConstructor
 public class MemberController {
+
+    private final MemberService memberService;
 
     // 회원가입
     @PostMapping("/signup")
     public ApiResponse<MemberResDTO.SignUpResultDto> signUp(
-            @RequestBody MemberReqDTO.SignUpDto request
+            @Valid @RequestBody MemberReqDTO.SignUpDto request
     ) {
         MemberResDTO.SignUpResultDto result =
-                new MemberResDTO.SignUpResultDto(
-                        1L,
-                        request.getName(),
-                        request.getEmail()
-                );
+                memberService.signUp(request);
 
-        return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
+        return ApiResponse.onSuccess(
+                GeneralSuccessCode.OK,
+                result
+        );
     }
 
     // 로그인
