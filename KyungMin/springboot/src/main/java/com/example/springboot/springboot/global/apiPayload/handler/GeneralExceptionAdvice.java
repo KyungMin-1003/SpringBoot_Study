@@ -4,6 +4,7 @@ import com.example.springboot.springboot.global.apiPayload.ApiResponse;
 import com.example.springboot.springboot.global.apiPayload.code.BaseErrorCode;
 import com.example.springboot.springboot.global.apiPayload.code.GeneralErrorCode;
 import com.example.springboot.springboot.global.apiPayload.exception.ProjectException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -40,6 +41,23 @@ public class GeneralExceptionAdvice {
         return ResponseEntity
                 .status(code.getStatus())
                 .body(ApiResponse.onFailure(code, errors));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiResponse<String>> handleConstraintViolation(
+            ConstraintViolationException ex
+    ) {
+        BaseErrorCode code = GeneralErrorCode.BAD_REQUEST;
+
+        String message = ex.getConstraintViolations()
+                .stream()
+                .findFirst()
+                .map(violation -> violation.getMessage())
+                .orElse("잘못된 요청입니다.");
+
+        return ResponseEntity
+                .status(code.getStatus())
+                .body(ApiResponse.onFailure(code, message));
     }
 
     @ExceptionHandler(Exception.class)

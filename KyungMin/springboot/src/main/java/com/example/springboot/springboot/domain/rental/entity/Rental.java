@@ -3,6 +3,8 @@ package com.example.springboot.springboot.domain.rental.entity;
 import com.example.springboot.springboot.domain.book.entity.Book;
 import com.example.springboot.springboot.domain.member.entity.Member;
 import com.example.springboot.springboot.domain.rental.enums.RentalStatus;
+import com.example.springboot.springboot.domain.rental.exception.RentalErrorCode;
+import com.example.springboot.springboot.domain.rental.exception.RentalException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -46,6 +48,12 @@ public class Rental {
     private String returnMemo;
 
     public void returnBook(String memo) {
+        if (this.status == RentalStatus.RETURNED) {
+            throw new RentalException(
+                    RentalErrorCode.ALREADY_RETURNED
+            );
+        }
+
         this.returnedAt = LocalDateTime.now();
         this.status = RentalStatus.RETURNED;
         this.returnMemo = memo;

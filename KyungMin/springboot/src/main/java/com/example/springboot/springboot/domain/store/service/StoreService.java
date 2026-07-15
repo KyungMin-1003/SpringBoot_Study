@@ -3,6 +3,8 @@ package com.example.springboot.springboot.domain.store.service;
 
 import com.example.springboot.springboot.domain.store.dto.StoreResDTO;
 import com.example.springboot.springboot.domain.store.entity.Store;
+import com.example.springboot.springboot.domain.store.exception.StoreErrorCode;
+import com.example.springboot.springboot.domain.store.exception.StoreException;
 import com.example.springboot.springboot.domain.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,7 +33,11 @@ public class StoreService {
     @Transactional(readOnly = true)
     public StoreResDTO.StoreInfoDto getStore(Long storeId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new RuntimeException("매장을 찾을 수 없습니다."));
+                .orElseThrow(() ->
+                        new StoreException(
+                                StoreErrorCode.STORE_NOT_FOUND
+                        )
+                );
 
         return new StoreResDTO.StoreInfoDto(
                 store.getId(),

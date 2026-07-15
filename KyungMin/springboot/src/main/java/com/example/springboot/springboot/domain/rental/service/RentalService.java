@@ -1,13 +1,19 @@
 package com.example.springboot.springboot.domain.rental.service;
 
 import com.example.springboot.springboot.domain.book.entity.Book;
+import com.example.springboot.springboot.domain.book.exception.BookErrorCode;
+import com.example.springboot.springboot.domain.book.exception.BookException;
 import com.example.springboot.springboot.domain.book.repository.BookRepository;
 import com.example.springboot.springboot.domain.member.entity.Member;
+import com.example.springboot.springboot.domain.member.exception.MemberErrorCode;
+import com.example.springboot.springboot.domain.member.exception.MemberException;
 import com.example.springboot.springboot.domain.member.repository.MemberRepository;
 import com.example.springboot.springboot.domain.rental.dto.RentalReqDTO;
 import com.example.springboot.springboot.domain.rental.dto.RentalResDTO;
 import com.example.springboot.springboot.domain.rental.entity.Rental;
 import com.example.springboot.springboot.domain.rental.enums.RentalStatus;
+import com.example.springboot.springboot.domain.rental.exception.RentalErrorCode;
+import com.example.springboot.springboot.domain.rental.exception.RentalException;
 import com.example.springboot.springboot.domain.rental.repository.RentalRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,10 +35,18 @@ public class RentalService {
     @Transactional
     public RentalResDTO.CreateRentalResultDto createRental(Long bookId, RentalReqDTO.CreateRentalDto request) {
         Member member = memberRepository.findById(request.getMemberId())
-                .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
+                .orElseThrow(() ->
+                        new MemberException(
+                                MemberErrorCode.MEMBER_NOT_FOUND
+                        )
+                );
 
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("책을 찾을 수 없습니다."));
+                .orElseThrow(() ->
+                        new BookException(
+                                BookErrorCode.BOOK_NOT_FOUND
+                        )
+                );
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -57,7 +71,11 @@ public class RentalService {
     @Transactional
     public RentalResDTO.ReturnRentalResultDto returnRental(Long rentalId, RentalReqDTO.ReturnRentalDto request) {
         Rental rental = rentalRepository.findById(rentalId)
-                .orElseThrow(() -> new RuntimeException("대여 정보를 찾을 수 없습니다."));
+                .orElseThrow(() ->
+                        new RentalException(
+                                RentalErrorCode.RENTAL_NOT_FOUND
+                        )
+                );
 
         rental.returnBook(request.getMemo());
 

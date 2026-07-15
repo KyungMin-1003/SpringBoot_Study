@@ -6,9 +6,13 @@ import com.example.springboot.springboot.domain.review.service.ReviewService;
 import com.example.springboot.springboot.global.apiPayload.ApiResponse;
 import com.example.springboot.springboot.global.apiPayload.code.GeneralSuccessCode;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 public class ReviewController {
@@ -19,7 +23,6 @@ public class ReviewController {
     @PostMapping("/books/{bookId}/reviews")
     public ApiResponse<ReviewResDTO.CreateReviewResultDto> createReview(
             @PathVariable Long bookId,
-            @RequestHeader(value = "Authorization", required = false) String authorization,
             @Valid @RequestBody ReviewReqDTO.CreateReviewDto request
     ) {
         ReviewResDTO.CreateReviewResultDto result = reviewService.createReview(bookId, request);
@@ -31,10 +34,18 @@ public class ReviewController {
     @GetMapping("/books/{bookId}/reviews")
     public ApiResponse<ReviewResDTO.ReviewListDto> getBookReviews(
             @PathVariable Long bookId,
-            @RequestParam(required = false, defaultValue = "0") Integer page,
-            @RequestParam(required = false, defaultValue = "10") Integer size
+
+            @RequestParam(defaultValue = "0")
+            @Min(value = 0, message = "페이지는 0 이상이어야 합니다.")
+            Integer page,
+
+            @RequestParam(defaultValue = "10")
+            @Min(value = 1, message = "페이지 크기는 1 이상이어야 합니다.")
+            @Max(value = 100, message = "페이지 크기는 100 이하여야 합니다.")
+            Integer size
     ) {
-        ReviewResDTO.ReviewListDto result = reviewService.getBookReviews(bookId, page, size);
+        ReviewResDTO.ReviewListDto result =
+                reviewService.getBookReviews(bookId, page, size);
 
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
@@ -43,11 +54,15 @@ public class ReviewController {
     @GetMapping("/members/{memberId}/reviews")
     public ApiResponse<ReviewResDTO.ReviewCursorListDto> getMemberReviews(
             @PathVariable Long memberId,
-            @RequestHeader(value = "Authorization", required = false) String authorization,
             @RequestParam(required = false) Long cursor,
-            @RequestParam(required = false, defaultValue = "10") Integer size
+
+            @RequestParam(defaultValue = "10")
+            @Min(value = 1, message = "페이지 크기는 1 이상이어야 합니다.")
+            @Max(value = 100, message = "페이지 크기는 100 이하여야 합니다.")
+            Integer size
     ) {
-        ReviewResDTO.ReviewCursorListDto result = reviewService.getMyReviews(memberId, cursor, size);
+        ReviewResDTO.ReviewCursorListDto result =
+                reviewService.getMyReviews(memberId, cursor, size);
 
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
@@ -56,14 +71,10 @@ public class ReviewController {
     @PatchMapping("/reviews/{reviewId}")
     public ApiResponse<ReviewResDTO.UpdateReviewResultDto> updateReview(
             @PathVariable Long reviewId,
-            @RequestHeader(value = "Authorization", required = false) String authorization,
             @Valid @RequestBody ReviewReqDTO.UpdateReviewDto request
     ) {
         ReviewResDTO.UpdateReviewResultDto result =
-                new ReviewResDTO.UpdateReviewResultDto(
-                        reviewId,
-                        request.getContent()
-                );
+                reviewService.updateReview(reviewId, request);
 
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
@@ -71,14 +82,10 @@ public class ReviewController {
     // 리뷰 삭제
     @DeleteMapping("/reviews/{reviewId}")
     public ApiResponse<ReviewResDTO.DeleteReviewResultDto> deleteReview(
-            @PathVariable Long reviewId,
-            @RequestHeader(value = "Authorization", required = false) String authorization
+            @PathVariable Long reviewId
     ) {
         ReviewResDTO.DeleteReviewResultDto result =
-                new ReviewResDTO.DeleteReviewResultDto(
-                        reviewId,
-                        "리뷰가 삭제되었습니다."
-                );
+                reviewService.deleteReview(reviewId);
 
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }

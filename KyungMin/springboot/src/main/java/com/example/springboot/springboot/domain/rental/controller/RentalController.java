@@ -6,9 +6,13 @@ import com.example.springboot.springboot.domain.rental.service.RentalService;
 import com.example.springboot.springboot.global.apiPayload.ApiResponse;
 import com.example.springboot.springboot.global.apiPayload.code.GeneralSuccessCode;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@Validated
 @RequiredArgsConstructor
 @RestController
 public class RentalController {
@@ -18,7 +22,6 @@ public class RentalController {
     @PostMapping("/books/{bookId}/rentals")
     public ApiResponse<RentalResDTO.CreateRentalResultDto> rentBook(
             @PathVariable Long bookId,
-            @RequestHeader("Authorization") String authorization,
             @Valid @RequestBody RentalReqDTO.CreateRentalDto request
     ) {
         RentalResDTO.CreateRentalResultDto result =
@@ -32,7 +35,6 @@ public class RentalController {
     @PatchMapping("/rentals/{rentalId}/return")
     public ApiResponse<RentalResDTO.ReturnRentalResultDto> returnBook(
             @PathVariable Long rentalId,
-            @RequestHeader("Authorization") String authorization,
             @Valid @RequestBody RentalReqDTO.ReturnRentalDto request
     ) {
         RentalResDTO.ReturnRentalResultDto result =
@@ -44,9 +46,14 @@ public class RentalController {
     @GetMapping("/members/{memberId}/rentals")
     public ApiResponse<RentalResDTO.RentalListDto> getMemberRentals(
             @PathVariable Long memberId,
-            @RequestHeader("Authorization") String authorization,
-            @RequestParam(required = false, defaultValue = "0") Integer page,
-            @RequestParam(required = false, defaultValue = "10") Integer size
+            @RequestParam(defaultValue = "0")
+            @Min(value = 0, message = "페이지는 0 이상이어야 합니다.")
+            Integer page,
+
+            @RequestParam(defaultValue = "10")
+            @Min(value = 1, message = "페이지 크기는 1 이상이어야 합니다.")
+            @Max(value = 100, message = "페이지 크기는 100 이하여야 합니다.")
+            Integer size
     ) {
         RentalResDTO.RentalListDto result =
                 rentalService.getMemberRentals(memberId, page, size);
@@ -59,7 +66,6 @@ public class RentalController {
     //조회 성격의 API이지만 과제에 사용자 ID를 Request Body로 받아야 해서 POST로 구현함
     @PostMapping("/rentals/ongoing")
     public ApiResponse<RentalResDTO.OngoingRentalListDto> getOngoingRentals(
-            @RequestHeader("Authorization") String authorization, //여기는 07주차에서는 실제로 이 값을사용하지 않는다. 인증로직이 구현되지 않았기 때문이다.
             @Valid @RequestBody RentalReqDTO.OngoingRentalSearchDto request
     ) {
         RentalResDTO.OngoingRentalListDto result =

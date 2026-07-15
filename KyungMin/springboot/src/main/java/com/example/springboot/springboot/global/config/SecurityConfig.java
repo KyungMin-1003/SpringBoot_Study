@@ -2,6 +2,8 @@ package com.example.springboot.springboot.global.config;
 
 import com.example.springboot.springboot.global.security.handler.CustomAccessDeniedHandler;
 import com.example.springboot.springboot.global.security.handler.CustomAuthenticationEntryPoint;
+import com.example.springboot.springboot.global.security.handler.CustomAuthenticationFailureHandler;
+import com.example.springboot.springboot.global.security.handler.CustomAuthenticationSuccessHandler;
 import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +19,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
             CustomAuthenticationEntryPoint authenticationEntryPoint,
-            CustomAccessDeniedHandler accessDeniedHandler
+            CustomAccessDeniedHandler accessDeniedHandler,
+            CustomAuthenticationSuccessHandler authenticationSuccessHandler,
+            CustomAuthenticationFailureHandler authenticationFailureHandler
     ) throws Exception {
 
         http
@@ -37,6 +41,8 @@ public class SecurityConfig {
                                 PathRequest.toH2Console()
                         ).permitAll()
 
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
 
@@ -44,6 +50,8 @@ public class SecurityConfig {
                         .loginProcessingUrl("/members/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
+                        .successHandler(authenticationSuccessHandler)
+                        .failureHandler(authenticationFailureHandler)
                         .permitAll()
                 )
 

@@ -2,13 +2,19 @@ package com.example.springboot.springboot.domain.review.service;
 
 
 import com.example.springboot.springboot.domain.book.entity.Book;
+import com.example.springboot.springboot.domain.book.exception.BookErrorCode;
+import com.example.springboot.springboot.domain.book.exception.BookException;
 import com.example.springboot.springboot.domain.book.repository.BookRepository;
 import com.example.springboot.springboot.domain.member.entity.Member;
+import com.example.springboot.springboot.domain.member.exception.MemberErrorCode;
+import com.example.springboot.springboot.domain.member.exception.MemberException;
 import com.example.springboot.springboot.domain.member.repository.MemberRepository;
 import com.example.springboot.springboot.domain.review.converter.ReviewConverter;
 import com.example.springboot.springboot.domain.review.dto.ReviewReqDTO;
 import com.example.springboot.springboot.domain.review.dto.ReviewResDTO;
 import com.example.springboot.springboot.domain.review.entity.Review;
+import com.example.springboot.springboot.domain.review.exception.ReviewErrorCode;
+import com.example.springboot.springboot.domain.review.exception.ReviewException;
 import com.example.springboot.springboot.domain.review.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +36,18 @@ public class ReviewService {
     @Transactional
     public ReviewResDTO.CreateReviewResultDto createReview(Long bookId, ReviewReqDTO.CreateReviewDto request) {
         Member member = memberRepository.findById(request.getMemberId())
-                .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
+                .orElseThrow(() ->
+                        new MemberException(
+                                MemberErrorCode.MEMBER_NOT_FOUND
+                        )
+                );
 
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("책을 찾을 수 없습니다."));
+                .orElseThrow(() ->
+                        new BookException(
+                                BookErrorCode.BOOK_NOT_FOUND
+                        )
+                );
 
         Review review = Review.builder()
                 .member(member)
@@ -99,5 +113,41 @@ public class ReviewService {
         );
 
         return ReviewConverter.toReviewCursorListDto(reviews, size);
+    }
+    @Transactional
+    public ReviewResDTO.UpdateReviewResultDto updateReview(
+            Long reviewId,
+            ReviewReqDTO.UpdateReviewDto request
+    ) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() ->
+                        new ReviewException(
+                                ReviewErrorCode.REVIEW_NOT_FOUND
+                        )
+                );
+
+        review.update(request.getContent(), request.getRating());
+
+        return new ReviewResDTO.UpdateReviewResultDto(
+                review.getId(),
+                review.getContent()
+        );
+    }
+
+    @Transactional
+    public ReviewResDTO.DeleteReviewResultDto deleteReview(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() ->
+                        new ReviewException(
+                                ReviewErrorCode.REVIEW_NOT_FOUND
+                        )
+                );
+
+        reviewRepository.delete(review);
+
+        return new ReviewResDTO.DeleteReviewResultDto(
+                reviewId,
+                "리뷰가 삭제되었습니다."
+        );
     }
 }
