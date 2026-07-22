@@ -8,6 +8,8 @@ import com.example.springboot.springboot.global.apiPayload.code.GeneralSuccessCo
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @RestController
 @RequestMapping("/members")
@@ -33,16 +35,15 @@ public class MemberController {
     // 로그인
     @PostMapping("/login")
     public ApiResponse<MemberResDTO.LoginResultDto> login(
-            @RequestBody MemberReqDTO.LoginDto request
+            @Valid @RequestBody MemberReqDTO.LoginDto request
     ) {
         MemberResDTO.LoginResultDto result =
-                new MemberResDTO.LoginResultDto(
-                        "temporary-access-token",
-                        1L,
-                        "김경민"
-                );
+                memberService.login(request);
 
-        return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
+        return ApiResponse.onSuccess(
+                GeneralSuccessCode.OK,
+                result
+        );
     }
 
     // 로그아웃
@@ -61,32 +62,35 @@ public class MemberController {
     // 내 정보 조회
     @GetMapping("/me")
     public ApiResponse<MemberResDTO.MyInfoDto> getMyInfo(
-            @RequestHeader("Authorization") String authorization
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
         MemberResDTO.MyInfoDto result =
-                new MemberResDTO.MyInfoDto(
-                        1L,
-                        "김경민",
-                        "test@example.com",
-                        25
+                memberService.getMyInfo(
+                        userDetails.getUsername()
                 );
 
-        return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
+        return ApiResponse.onSuccess(
+                GeneralSuccessCode.OK,
+                result
+        );
     }
 
     // 회원 정보 수정
     @PatchMapping("/me")
     public ApiResponse<MemberResDTO.UpdateMemberResultDto> updateMember(
-            @RequestHeader("Authorization") String authorization,
-            @RequestBody MemberReqDTO.UpdateMemberDto request
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody MemberReqDTO.UpdateMemberDto request
     ) {
         MemberResDTO.UpdateMemberResultDto result =
-                new MemberResDTO.UpdateMemberResultDto(
-                        1L,
-                        request.getName()
+                memberService.updateMember(
+                        userDetails.getUsername(),
+                        request
                 );
 
-        return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
+        return ApiResponse.onSuccess(
+                GeneralSuccessCode.OK,
+                result
+        );
     }
 
     // 회원 탈퇴
@@ -102,5 +106,6 @@ public class MemberController {
 
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
+
 }
 

@@ -46,4 +46,24 @@ public class Member {
     @Column(nullable = false, length = 20)
     @Builder.Default
     private UserState userState = UserState.ACTIVE;
+
+    @Column(name = "phone_number", length = 30)
+    private String phoneNumber;
+
+    public void updateProfile(
+            String name,
+            String phoneNumber
+    ) {
+        if (name != null && !name.isBlank()) {
+            this.name = name;
+        }
+
+        if (phoneNumber != null && !phoneNumber.isBlank()) {
+            this.phoneNumber = phoneNumber;
+        }
+    }
+
+    public void updatePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
 }

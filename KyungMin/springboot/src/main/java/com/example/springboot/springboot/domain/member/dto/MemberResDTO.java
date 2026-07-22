@@ -33,6 +33,7 @@ public class MemberResDTO {
         private Long memberId;
         private String name;
         private String email;
+        private String phoneNumber;
         private Integer point;
     }
 
